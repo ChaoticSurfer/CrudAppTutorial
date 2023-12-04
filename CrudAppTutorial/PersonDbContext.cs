@@ -6,7 +6,8 @@ namespace CrudAppTutorial
     {
         public DbSet<Person> People { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public PersonDbContext(DbContextOptions<PersonDbContext> options)
+              : base(options)
         {
         }
     }
