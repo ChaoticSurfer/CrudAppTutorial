@@ -6,11 +6,6 @@ namespace CrudAppTutorial
     {
         public DbSet<Person> People { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite("Data Source = dataabse.db");
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
         }
