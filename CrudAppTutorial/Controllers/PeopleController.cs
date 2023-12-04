@@ -59,6 +59,7 @@ namespace CrudAppTutorial.Controllers
                 return BadRequest();
             }
 
+            _context.Entry(person).State = EntityState.Modified;
             _context.Update(person);
 
             try
