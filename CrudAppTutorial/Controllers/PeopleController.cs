@@ -54,6 +54,12 @@ namespace CrudAppTutorial.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPerson(int id, Person person)
         {
+
+            if (!this.ModelState.IsValid) 
+                return BadRequest(ModelState);
+
+
+
             if (id != person.Id)
             {
                 return BadRequest();
@@ -86,7 +92,11 @@ namespace CrudAppTutorial.Controllers
         [HttpPost]
         public async Task<ActionResult<Person>> PostPerson(Person person)
         {
-          if (_context.People == null)
+            if (!this.ModelState.IsValid)
+                return BadRequest(ModelState);
+
+
+            if (_context.People == null)
           {
               return Problem("Entity set 'PersonDbContext.People'  is null.");
           }

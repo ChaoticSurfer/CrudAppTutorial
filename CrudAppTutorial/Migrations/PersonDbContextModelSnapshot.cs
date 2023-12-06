@@ -24,6 +24,7 @@ namespace CrudAppTutorial.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
