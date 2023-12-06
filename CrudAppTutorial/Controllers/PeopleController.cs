@@ -90,8 +90,11 @@ namespace CrudAppTutorial.Controllers
         // POST: api/People
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754     DTOs
         [HttpPost]
-        public async Task<ActionResult<Person>> PostPerson(Person person)
+        public async Task<ActionResult<Person>> PostPerson(PersonDto personDto)
         {
+            var mapper = new PersonMapper();
+            var person =  mapper.DtoToPerson(personDto);
+
             if (!this.ModelState.IsValid)
                 return BadRequest(ModelState);
 
