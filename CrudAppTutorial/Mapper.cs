@@ -1,4 +1,6 @@
-﻿using Riok.Mapperly.Abstractions;
+﻿using CrudAppTutorial.Dtos;
+using CrudAppTutorial.Models;
+using Riok.Mapperly.Abstractions;
 
 namespace CrudAppTutorial
 {

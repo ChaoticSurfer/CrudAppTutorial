@@ -1,4 +1,4 @@
-﻿namespace CrudAppTutorial
+﻿namespace CrudAppTutorial.Dtos
 {
     public class CreatePetDto
     {

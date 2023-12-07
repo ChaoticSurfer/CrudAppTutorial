@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CrudAppTutorial.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CrudAppTutorial
 {

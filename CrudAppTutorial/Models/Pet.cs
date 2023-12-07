@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CrudAppTutorial
+namespace CrudAppTutorial.Models
 {
     public class Pet
     {
