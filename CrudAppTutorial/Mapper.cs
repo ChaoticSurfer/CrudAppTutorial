@@ -3,8 +3,9 @@
 namespace CrudAppTutorial
 {
     [Mapper]
-    public partial class PersonMapper
+    public partial class Mapper
     {
         public partial Person DtoToPerson(PersonDto car);
+        public partial Pet DtoToPet(CreatePetDto car);
     }
 }

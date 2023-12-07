@@ -1,137 +1,125 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using CrudAppTutorial;
 
-namespace CrudAppTutorial.Controllers
+[Route("api/[controller]")]
+[ApiController]
+public class PeopleController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class PeopleController : ControllerBase
+    private readonly WorldDbContext _context;
+
+    public PeopleController(WorldDbContext context)
     {
-        private readonly PersonDbContext _context;
+        _context = context;
+    }
 
-        public PeopleController(PersonDbContext context)
+    // GET: api/People
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Person>>> GetPeople()
+    {
+        if (_context.People == null)
         {
-            _context = context;
+            return NotFound();
         }
 
-        // GET: api/People
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Person>>> GetPeople()
+        return await _context.People.Include(p => p.Pets).ToListAsync();
+    }
+
+    // GET: api/People/5
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Person>> GetPerson(int id)
+    {
+        var person = await _context.People.Include(p => p.Pets).FirstOrDefaultAsync(p => p.Id == id);
+
+        if (person == null)
         {
-          if (_context.People == null)
-          {
-              return NotFound();
-          }
-            return await _context.People.ToListAsync();
+            return NotFound();
         }
 
-        // GET: api/People/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Person>> GetPerson(int id)
+        return person;
+    }
+
+    // PUT: api/People/5
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754     DTOs
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutPerson(int id, Person person)
+    {
+        if (!this.ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        if (id != person.Id)
         {
-          if (_context.People == null)
-          {
-              return NotFound();
-          }
-            var person = await _context.People.FindAsync(id);
-
-            if (person == null)
-            {
-                return NotFound();
-            }
-
-            return person;
+            return BadRequest();
         }
 
-        // PUT: api/People/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754     DTOs
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPerson(int id, Person person)
+        _context.Update(person);
+
+        try
         {
-
-            if (!this.ModelState.IsValid) 
-                return BadRequest(ModelState);
-
-
-
-            if (id != person.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(person).State = EntityState.Modified;
-            _context.Update(person);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PersonExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/People
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754     DTOs
-        [HttpPost]
-        public async Task<ActionResult<Person>> PostPerson(PersonDto personDto)
-        {
-            var mapper = new PersonMapper();
-            var person =  mapper.DtoToPerson(personDto);
-
-            if (!this.ModelState.IsValid)
-                return BadRequest(ModelState);
-
-
-            if (_context.People == null)
-          {
-              return Problem("Entity set 'PersonDbContext.People'  is null.");
-          }
-            _context.People.Add(person);
             await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetPerson", new { id = person.Id }, person);
         }
-
-        // DELETE: api/People/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePerson(int id)
+        catch (DbUpdateConcurrencyException)
         {
-            if (_context.People == null)
+            if (!PersonExists(id))
             {
                 return NotFound();
             }
-            var person = await _context.People.FindAsync(id);
-            if (person == null)
+            else
             {
-                return NotFound();
+                throw;
             }
-
-            _context.People.Remove(person);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
 
-        private bool PersonExists(int id)
+        return NoContent();
+    }
+
+    // POST: api/People
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754     DTOs
+    [HttpPost]
+    public async Task<ActionResult<Person>> PostPerson(PersonDto personDto)
+    {
+        var mapper = new Mapper();
+        var person = mapper.DtoToPerson(personDto);
+
+        if (!this.ModelState.IsValid)
+            return BadRequest(ModelState);
+
+
+        if (_context.People == null)
         {
-            return (_context.People?.Any(e => e.Id == id)).GetValueOrDefault();
+            return Problem("Entity set 'PersonDbContext.People'  is null.");
         }
+        _context.People.Add(person);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction("GetPerson", new { id = person.Id }, person);
+    }
+
+    // DELETE: api/People/5
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeletePerson(int id)
+    {
+        if (_context.People == null)
+        {
+            return NotFound();
+        }
+        var person = await _context.People.FindAsync(id);
+        if (person == null)
+        {
+            return NotFound();
+        }
+
+        _context.People.Remove(person);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    private bool PersonExists(int id)
+    {
+        return (_context.People?.Any(e => e.Id == id)).GetValueOrDefault();
     }
 }

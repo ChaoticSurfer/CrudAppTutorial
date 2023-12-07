@@ -2,14 +2,12 @@
 
 namespace CrudAppTutorial
 {
-    public class Person
+    public class Pet
     {
         [Key]
         public int Id { get; set; }
-
-        [MaxLength(10, ErrorMessage = "Cant be longer then 10" )]
         public string Name { get; set; }
-
-        public List<Pet> Pets { get; set;}
+        public string Race { get; set; }
+        public Person Owner { get; set; }
     }
 }

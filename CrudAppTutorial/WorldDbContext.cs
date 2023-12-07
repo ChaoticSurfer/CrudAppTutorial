@@ -2,11 +2,12 @@
 
 namespace CrudAppTutorial
 {
-    public class PersonDbContext : DbContext
+    public class WorldDbContext : DbContext
     {
         public DbSet<Person> People { get; set; }
+        public DbSet<Pet> Pets { get; set; }
 
-        public PersonDbContext(DbContextOptions<PersonDbContext> options)
+        public WorldDbContext(DbContextOptions<WorldDbContext> options)
               : base(options)
         {
         }
